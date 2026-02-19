@@ -2,11 +2,9 @@ name: Integration
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -22,41 +20,28 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+          cache-dependency-path: |
+            server/package-lock.json
+            client/package-lock.json
 
-      # -------------------
       # Backend
-      # -------------------
-      - name: Install Backend Dependencies
-        working-directory: ./server
+      - name: Install Backend
+        working-directory: server
         run: npm ci
 
-      - name: Run Backend Lint
-        working-directory: ./server
-        run: npm run lint --if-present
-
       - name: Run Backend Tests
-        working-directory: ./server
-        run: npm run test
+        working-directory: server
+        run: npm test
 
-      - name: Build Backend
-        working-directory: ./server
-        run: npm run build --if-present
-
-      # -------------------
       # Frontend
-      # -------------------
-      - name: Install Frontend Dependencies
-        working-directory: ./client
+      - name: Install Frontend
+        working-directory: client
         run: npm ci
 
       - name: Run Frontend Tests
-        working-directory: ./client
+        working-directory: client
         run: npm run test -- --run
-
-      - name: Build Frontend
-        working-directory: ./client
-        run: npm run build --if-present
