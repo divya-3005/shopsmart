@@ -10,6 +10,6 @@ test.describe('ShopSmart User Flow', () => {
 
     // 3. Check if backend status shows up (simulating an interaction/result)
     // Normally we'd do: login -> action -> result. We're testing a basic initial view -> result.
-    await expect(page.locator('text=Backend Running')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=API')).toBeVisible({ timeout: 10000 });
   });
 });

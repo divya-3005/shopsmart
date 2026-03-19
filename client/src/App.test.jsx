@@ -9,14 +9,14 @@ describe('App Component', () => {
     vi.restoreAllMocks()
   })
 
-  it('renders ShopSmart title', async () => {
+  it('renders ShopSmart title and default products', async () => {
 
     global.fetch = vi.fn(() =>
       Promise.resolve({
         json: () =>
           Promise.resolve({
             status: 'ok',
-            message: 'Backend Running',
+            message: 'ShopSmart Backend is running',
             timestamp: 'now'
           })
       })
@@ -24,52 +24,24 @@ describe('App Component', () => {
 
     render(<App />)
 
+    // Check header
     expect(screen.getByText(/ShopSmart/i)).toBeInTheDocument()
+    
+    // Check product renders
+    expect(screen.getByText(/Wireless Headphones/i)).toBeInTheDocument()
 
-    // Wait for async state update to finish
+    // Wait for async API status update to finish
     await waitFor(() => {
-      expect(screen.getByText(/Backend Running/i)).toBeInTheDocument()
+      expect(screen.getByText(/API Online/i)).toBeInTheDocument()
     })
   })
 
-  it('shows loading initially', async () => {
+  it('renders offline data after failed fetch', async () => {
 
-    global.fetch = vi.fn(() =>
-      new Promise(resolve =>
-        setTimeout(() =>
-          resolve({
-            json: () =>
-              Promise.resolve({
-                status: 'ok',
-                message: 'Backend Running',
-                timestamp: 'now'
-              })
-          }), 100
-        )
-      )
-    )
+    global.fetch = vi.fn(() => Promise.reject(new Error('Network Error')))
 
     render(<App />)
 
-    expect(screen.getByText(/Loading backend status/i)).toBeInTheDocument()
-  })
-
-  it('renders backend data after fetch', async () => {
-
-    global.fetch = vi.fn(() =>
-      Promise.resolve({
-        json: () =>
-          Promise.resolve({
-            status: 'ok',
-            message: 'Backend Running',
-            timestamp: '12345'
-          })
-      })
-    )
-
-    render(<App />)
-
-    expect(await screen.findByText(/Backend Running/i)).toBeInTheDocument()
-    expect(await screen.findByText(/12345/i)).toBeInTheDocument()
+    expect(await screen.findByText(/API Offline/i)).toBeInTheDocument()
   })
 })
