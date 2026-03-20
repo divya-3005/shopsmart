@@ -11,7 +11,7 @@ describe('App Component', () => {
 
   it('renders ShopSmart title and default products', async () => {
 
-    global.fetch = vi.fn(() =>
+    globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         json: () =>
           Promise.resolve({
@@ -38,7 +38,7 @@ describe('App Component', () => {
 
   it('renders offline data after failed fetch', async () => {
 
-    global.fetch = vi.fn(() => Promise.reject(new Error('Network Error')))
+    globalThis.fetch = vi.fn(() => Promise.reject(new Error('Network Error')))
 
     render(<App />)
 
