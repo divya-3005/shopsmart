@@ -33,6 +33,42 @@ resource "aws_ecr_repository" "app_repo" {
 }
 
 # ------------------------------------------------------------------------------
+# EC2 Instance (Midsem Rubric: Management Server)
+# ------------------------------------------------------------------------------
+
+data "aws_ami" "amazon_linux_2023" {
+  most_recent = true
+  owners      = ["amazon"]
+  filter {
+    name   = "name"
+    values = ["al2023-ami-*-x86_64"]
+  }
+}
+
+resource "aws_instance" "mgmt_server" {
+  ami           = data.aws_ami.amazon_linux_2023.id
+  instance_type = "t3.micro"
+  
+  subnet_id                   = data.aws_subnets.default.ids[0]
+  vpc_security_group_ids      = [aws_security_group.ecs_sg.id]
+  associate_public_ip_address = true
+  
+  # Note: In a real lab, you'd specify a key_name. 
+  # We use a placeholder here or rely on SSM.
+  # key_name      = "vockey" 
+
+  tags = {
+    Name    = "shopsmart-mgmt-server"
+    Project = var.project_name
+  }
+}
+
+output "mgmt_server_public_ip" {
+  description = "Public IP of the management server"
+  value       = aws_instance.mgmt_server.public_ip
+}
+
+# ------------------------------------------------------------------------------
 # ECS CLUSTER
 # ------------------------------------------------------------------------------
 resource "aws_ecs_cluster" "app_cluster" {
