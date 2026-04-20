@@ -81,7 +81,7 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: shopsmart-repo
+          ECR_REPOSITORY: shopsmart-v2-repo
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
@@ -92,20 +92,20 @@ jobs:
 
       - name: Download task definition
         run: |
-          aws ecs describe-task-definition --task-definition shopsmart-task --query taskDefinition > task-definition.json
+          aws ecs describe-task-definition --task-definition shopsmart-v2-task --query taskDefinition > task-definition.json
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: task-definition.json
-          container-name: shopsmart-container
+          container-name: shopsmart-v2-container
           image: ${{ steps.build-image.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: shopsmart-service
-          cluster: shopsmart-cluster
+          service: shopsmart-v2-service
+          cluster: shopsmart-v2-cluster
           wait-for-service-stability: true
