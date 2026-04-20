@@ -8,9 +8,9 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: shopsmart-repo
-  ECS_CLUSTER: shopsmart-cluster
-  ECS_SERVICE: shopsmart-service
+  ECR_REPOSITORY: shopsmart-v2-repo
+  ECS_CLUSTER: shopsmart-v2-cluster
+  ECS_SERVICE: shopsmart-v2-service
 
 jobs:
   deploy:
