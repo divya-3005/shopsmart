@@ -21,6 +21,11 @@ app.get('/api/health', (req, res) => {
 // Serve frontend static files
 app.use(express.static(path.join(__dirname, '../../client/dist')));
 
+// Root Route (Legacy Compatibility)
+app.get('/', (req, res) => {
+  res.send('ShopSmart Backend Service');
+});
+
 // Fallback for SPA routing: send index.html for any unknown routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../../client/dist/index.html'));

@@ -1,5 +1,8 @@
 # ShopSmart - Full Stack CI/CD Project
 
+> [!NOTE]
+> This repository represents the **Final Production Evolution** of the ShopSmart midsem project. It builds upon the initial midsem submission by adding industry-standard Infrastructure as Code (IaC), containerized high-availability deployment, and a mature CI/CD pipeline.
+
 ShopSmart is a modern, production-ready web application built to demonstrate a complete DevSecOps pipeline using AWS, Docker, and Terraform.
 
 ## 🚀 Architecture Overview
