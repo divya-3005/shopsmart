@@ -13,5 +13,8 @@ RUN cd server && npm install
 # Copy all source code
 COPY . .
 
+# Expose port 5001
+EXPOSE 5001
+
 # Start the server by default (docker-compose will override for dev)
 CMD ["npm", "start", "--prefix", "server"]
