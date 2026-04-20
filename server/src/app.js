@@ -3,6 +3,8 @@ const cors = require('cors');
 
 const app = express();
 
+const path = require('path');
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -16,9 +18,12 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Root Route (optional, just to show something)
-app.get('/', (req, res) => {
-  res.send('ShopSmart Backend Service');
+// Serve frontend static files
+app.use(express.static(path.join(__dirname, '../../client/dist')));
+
+// Fallback for SPA routing: send index.html for any unknown routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
 });
 
 module.exports = app;

@@ -121,3 +121,14 @@ jobs:
           service: shopsmart-v2-service
           cluster: shopsmart-v2-cluster
           wait-for-service-stability: true
+
+      - name: Deployment Diagnostics (on Failure)
+        if: failure()
+        run: |
+          echo "Deployment failed to stabilize. Fetching recent task diagnostics..."
+          TASK_ARN=$(aws ecs list-tasks --cluster shopsmart-v2-cluster --service-name shopsmart-v2-service --query "taskArns[0]" --output text)
+          if [ "$TASK_ARN" != "None" ]; then
+            aws ecs describe-tasks --cluster shopsmart-v2-cluster --tasks $TASK_ARN --query "tasks[0].{TaskArn:taskArn,LastStatus:lastStatus,StoppedReason:stoppedReason,Containers:containers[].{Name:name,LastStatus:lastStatus,ExitCode:exitCode,Reason:reason}}"
+          else
+            echo "No tasks found for the service."
+          fi
