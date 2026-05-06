@@ -16,7 +16,7 @@ function App() {
 
     // API Integration: Fetching Backend Health Status
     useEffect(() => {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+        const apiUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5001');
         fetch(`${apiUrl}/api/health`)
             .then(res => res.json())
             .then(data => setData(data))
