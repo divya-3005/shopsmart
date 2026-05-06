@@ -201,7 +201,7 @@ resource "random_id" "bucket_id" {
 }
 
 resource "aws_s3_bucket" "app_storage" {
-  bucket        = "shopsmart-v2-storage-40c9dfe6"
+  bucket        = "shopsmart-v2-storage-${random_id.bucket_id.hex}"
   force_destroy = true
 
   tags = {

@@ -27,18 +27,27 @@ jobs:
           cd server
           npm install --no-audit --no-fund
           npm run lint
-          npm test
-          npm run test:integration
+          npm test -- --json --outputFile=server-unit-report.json
+          npm run test:integration -- --json --outputFile=server-integration-report.json
 
       - name: Install & Test Client
         run: |
           cd client
           npm install --no-audit --no-fund
           npm run lint
-          npm run test
+          npm run test -- --reporter=json --outputFile=client-unit-report.json
           # Bonus - Playwright E2E Testing (Mock mode for speed)
           npx playwright install chromium --with-deps || echo "Playwright dependencies could not be installed, skipping."
           npm run test:e2e -- --project=chromium || echo "Skipping E2E failure for now"
+
+      - name: Upload Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            server/*-report.json
+            client/*-report.json
 
   terraform:
     name: Phase 2 - Infrastructure
