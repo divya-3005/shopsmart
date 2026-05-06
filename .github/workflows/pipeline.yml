@@ -65,6 +65,16 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Ensure Terraform State Bucket Exists
+        run: |
+          if ! aws s3api head-bucket --bucket shopsmart-v2-storage-40c9dfe6 2>/dev/null; then
+            echo "State bucket does not exist. Creating it..."
+            aws s3 mb s3://shopsmart-v2-storage-40c9dfe6 --region ${{ secrets.AWS_REGION }}
+            aws s3api put-bucket-versioning --bucket shopsmart-v2-storage-40c9dfe6 --versioning-configuration Status=Enabled
+          else
+            echo "State bucket already exists."
+          fi
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
